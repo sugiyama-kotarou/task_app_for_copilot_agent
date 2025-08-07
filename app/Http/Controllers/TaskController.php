@@ -32,7 +32,34 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: タスク保存ロジックの実装 (PR #3)
+        // バリデーション
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'title.required' => 'タイトルは必須です。',
+            'title.max' => 'タイトルは255文字以内で入力してください。',
+            'thumbnail.image' => 'サムネイルは画像ファイルを選択してください。',
+            'thumbnail.mimes' => 'サムネイルはJPEG、PNG、JPG、GIF形式のファイルを選択してください。',
+            'thumbnail.max' => 'サムネイルのサイズは2MB以下にしてください。',
+        ]);
+
+        // サムネイル画像の処理
+        $thumbnailPath = null;
+        if ($request->hasFile('thumbnail')) {
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
+        // タスクの作成
+        $task = Task::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'thumbnail' => $thumbnailPath,
+        ]);
+
+        // 成功メッセージとともにタスク一覧にリダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが正常に作成されました。');
     }
 
     /**
