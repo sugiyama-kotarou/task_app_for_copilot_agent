@@ -126,6 +126,15 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        // TODO: タスク削除ロジックの実装 (PR #5)
+        // サムネイル画像が存在する場合は削除
+        if ($task->thumbnail) {
+            Storage::disk('public')->delete($task->thumbnail);
+        }
+
+        // タスクを削除
+        $task->delete();
+
+        // 成功メッセージとともにタスク一覧にリダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが正常に削除されました。');
     }
 }
