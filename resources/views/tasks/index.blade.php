@@ -15,7 +15,7 @@
                 <!-- サムネイル画像 -->
                 <div class="h-48 bg-gray-200 flex items-center justify-center">
                     @if($task->thumbnail)
-                        <img src="{{ $task->thumbnail }}" alt="{{ $task->title }}" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $task->thumbnail) }}" alt="{{ $task->title }}" class="w-full h-full object-cover">
                     @else
                         <!-- ダミーサムネイル -->
                         <div class="text-gray-400 text-center">
