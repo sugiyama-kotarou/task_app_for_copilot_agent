@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -85,7 +86,39 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        // TODO: タスク更新ロジックの実装 (PR #4)
+        // バリデーション
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'title.required' => 'タイトルは必須です。',
+            'title.max' => 'タイトルは255文字以内で入力してください。',
+            'thumbnail.image' => 'サムネイルは画像ファイルを選択してください。',
+            'thumbnail.mimes' => 'サムネイルはJPEG、PNG、JPG、GIF形式のファイルを選択してください。',
+            'thumbnail.max' => 'サムネイルのサイズは2MB以下にしてください。',
+        ]);
+
+        // サムネイル画像の処理
+        $thumbnailPath = $task->thumbnail; // 既存のサムネイルを保持
+        if ($request->hasFile('thumbnail')) {
+            // 古いサムネイルがある場合は削除
+            if ($task->thumbnail) {
+                Storage::disk('public')->delete($task->thumbnail);
+            }
+            // 新しいサムネイルを保存
+            $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
+        // タスクの更新
+        $task->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? $task->description,
+            'thumbnail' => $thumbnailPath,
+        ]);
+
+        // 成功メッセージとともにタスク一覧にリダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが正常に更新されました。');
     }
 
     /**
