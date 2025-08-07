@@ -12,8 +12,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // TODO: ページネーション付きタスク一覧の実装 (PR #2)
-        return view('tasks.index');
+        // 9件ずつページネーション付きでタスクを取得
+        $tasks = Task::orderBy('created_at', 'desc')->paginate(9);
+        
+        return view('tasks.index', compact('tasks'));
     }
 
     /**
