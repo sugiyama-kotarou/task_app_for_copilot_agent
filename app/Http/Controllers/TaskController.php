@@ -15,7 +15,7 @@ class TaskController extends Controller
     {
         // 9件ずつページネーション付きでタスクを取得
         $tasks = Task::orderBy('created_at', 'desc')->paginate(9);
-        
+
         return view('tasks.index', compact('tasks'));
     }
 

@@ -23,7 +23,7 @@ class TaskEditTest extends TestCase
         ]);
 
         $response = $this->get("/tasks/{$task->id}/edit");
-        
+
         $response->assertStatus(200);
         $response->assertSee('タスク編集');
         $response->assertSee('タスクのタイトル');
@@ -40,7 +40,7 @@ class TaskEditTest extends TestCase
     public function test_edit_nonexistent_task_returns_404(): void
     {
         $response = $this->get('/tasks/99999/edit');
-        
+
         $response->assertStatus(404);
     }
 
@@ -60,7 +60,7 @@ class TaskEditTest extends TestCase
 
         $response->assertRedirect('/tasks');
         $response->assertSessionHas('success', 'タスクが正常に更新されました。');
-        
+
         $task->refresh();
         $this->assertEquals('更新後タイトル', $task->title);
         $this->assertEquals('更新前説明', $task->description); // 説明は変更されない
@@ -72,7 +72,7 @@ class TaskEditTest extends TestCase
     public function test_task_can_be_updated_with_all_fields(): void
     {
         Storage::fake('public');
-        
+
         $task = Task::create([
             'title' => '更新前タイトル',
             'description' => '更新前説明',
@@ -88,12 +88,12 @@ class TaskEditTest extends TestCase
 
         $response->assertRedirect('/tasks');
         $response->assertSessionHas('success', 'タスクが正常に更新されました。');
-        
+
         $task->refresh();
         $this->assertEquals('全フィールド更新タスク', $task->title);
         $this->assertEquals('更新後の詳細説明です。', $task->description);
         $this->assertNotNull($task->thumbnail);
-        
+
         // ファイルが保存されたことを確認
         Storage::disk('public')->assertExists($task->thumbnail);
     }
@@ -104,7 +104,7 @@ class TaskEditTest extends TestCase
     public function test_thumbnail_can_be_replaced(): void
     {
         Storage::fake('public');
-        
+
         // 既存のサムネイル付きタスクを作成
         $oldFile = UploadedFile::fake()->image('old-thumbnail.jpg');
         $task = Task::create([
@@ -122,11 +122,11 @@ class TaskEditTest extends TestCase
 
         $response->assertRedirect('/tasks');
         $response->assertSessionHas('success', 'タスクが正常に更新されました。');
-        
+
         $task->refresh();
         $this->assertNotEquals($oldThumbnailPath, $task->thumbnail);
         $this->assertNotNull($task->thumbnail);
-        
+
         // 新しいファイルが保存されたことを確認
         Storage::disk('public')->assertExists($task->thumbnail);
         // 古いファイルは削除されたことを確認
@@ -141,7 +141,7 @@ class TaskEditTest extends TestCase
         $response = $this->put('/tasks/99999', [
             'title' => '存在しないタスク',
         ]);
-        
+
         $response->assertStatus(404);
     }
 
@@ -161,7 +161,7 @@ class TaskEditTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('title');
-        
+
         // データベースは変更されていないことを確認
         $task->refresh();
         $this->assertEquals('元のタイトル', $task->title);
@@ -178,13 +178,13 @@ class TaskEditTest extends TestCase
         ]);
 
         $longTitle = str_repeat('a', 256);
-        
+
         $response = $this->put("/tasks/{$task->id}", [
             'title' => $longTitle,
         ]);
 
         $response->assertSessionHasErrors('title');
-        
+
         // データベースは変更されていないことを確認
         $task->refresh();
         $this->assertEquals('元のタイトル', $task->title);
@@ -196,7 +196,7 @@ class TaskEditTest extends TestCase
     public function test_thumbnail_must_be_image_file_for_update(): void
     {
         Storage::fake('public');
-        
+
         $task = Task::create([
             'title' => 'テストタスク',
         ]);
@@ -209,7 +209,7 @@ class TaskEditTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('thumbnail');
-        
+
         // データベースは変更されていないことを確認
         $task->refresh();
         $this->assertNull($task->thumbnail);
@@ -221,7 +221,7 @@ class TaskEditTest extends TestCase
     public function test_thumbnail_size_limit_for_update(): void
     {
         Storage::fake('public');
-        
+
         $task = Task::create([
             'title' => 'テストタスク',
         ]);
@@ -235,7 +235,7 @@ class TaskEditTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('thumbnail');
-        
+
         // データベースは変更されていないことを確認
         $task->refresh();
         $this->assertNull($task->thumbnail);

@@ -16,7 +16,7 @@ class TaskRoutesTest extends TestCase
     public function test_tasks_index_route_exists(): void
     {
         $response = $this->get('/tasks');
-        
+
         // ビューが作成されたので200を返すべき
         $response->assertStatus(200);
     }
@@ -27,7 +27,7 @@ class TaskRoutesTest extends TestCase
     public function test_tasks_create_route_exists(): void
     {
         $response = $this->get('/tasks/create');
-        
+
         // ビューをまだ作成していないため500を返す可能性があるが、
         // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
@@ -43,7 +43,7 @@ class TaskRoutesTest extends TestCase
         ]);
 
         $response = $this->get("/tasks/{$task->id}/edit");
-        
+
         // ビューをまだ作成していないため500を返す可能性があるが、
         // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
@@ -59,7 +59,7 @@ class TaskRoutesTest extends TestCase
         ]);
 
         $response = $this->get("/tasks/{$task->id}");
-        
+
         // ビューをまだ作成していないため500を返す可能性があるが、
         // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
@@ -71,7 +71,7 @@ class TaskRoutesTest extends TestCase
     public function test_route_model_binding_for_nonexistent_task(): void
     {
         $response = $this->get('/tasks/99999');
-        
+
         // 存在しないタスクに対しては404を返すべき
         $response->assertStatus(404);
     }
@@ -111,7 +111,7 @@ class TaskRoutesTest extends TestCase
     {
         // データベースが空であることを確認
         Task::query()->delete();
-        
+
         $response = $this->get('/tasks');
         $response->assertStatus(200);
         $response->assertSee('タスクがありません');
