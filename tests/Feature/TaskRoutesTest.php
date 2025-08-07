@@ -11,71 +11,71 @@ class TaskRoutesTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test that the tasks index route exists and returns expected status.
-     * Note: This will return 500 initially since views don't exist yet,
-     * but the route should be accessible.
+     * tasksのindexルートが存在し、期待されるステータスを返すことをテストする
+     * 注意: ビューがまだ存在しないため、初期状態では500を返す可能性があるが、
+     * ルートはアクセス可能であるべき
      */
     public function test_tasks_index_route_exists(): void
     {
         $response = $this->get('/tasks');
         
-        // Since we haven't created views yet, this might return 500
-        // but the route should exist (not 404)
+        // ビューをまだ作成していないため500を返す可能性があるが、
+        // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
     }
 
     /**
-     * Test that the tasks create route exists.
+     * tasksのcreateルートが存在することをテストする
      */
     public function test_tasks_create_route_exists(): void
     {
         $response = $this->get('/tasks/create');
         
-        // Since we haven't created views yet, this might return 500
-        // but the route should exist (not 404)
+        // ビューをまだ作成していないため500を返す可能性があるが、
+        // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
     }
 
     /**
-     * Test that the tasks edit route exists with a valid task.
+     * 有効なタスクでtasksのeditルートが存在することをテストする
      */
     public function test_tasks_edit_route_exists(): void
     {
         $task = Task::create([
-            'title' => 'Test Task for Edit',
+            'title' => '編集用テストタスク',
         ]);
 
         $response = $this->get("/tasks/{$task->id}/edit");
         
-        // Since we haven't created views yet, this might return 500
-        // but the route should exist (not 404)
+        // ビューをまだ作成していないため500を返す可能性があるが、
+        // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
     }
 
     /**
-     * Test that the tasks show route exists with a valid task.
+     * 有効なタスクでtasksのshowルートが存在することをテストする
      */
     public function test_tasks_show_route_exists(): void
     {
         $task = Task::create([
-            'title' => 'Test Task for Show',
+            'title' => '表示用テストタスク',
         ]);
 
         $response = $this->get("/tasks/{$task->id}");
         
-        // Since we haven't created views yet, this might return 500
-        // but the route should exist (not 404)
+        // ビューをまだ作成していないため500を返す可能性があるが、
+        // ルートは存在するべき（404ではない）
         $this->assertNotEquals(404, $response->getStatusCode());
     }
 
     /**
-     * Test that route model binding works correctly.
+     * ルートモデルバインディングが正しく動作することをテストする
      */
     public function test_route_model_binding_for_nonexistent_task(): void
     {
         $response = $this->get('/tasks/99999');
         
-        // Should return 404 for non-existent task
+        // 存在しないタスクに対しては404を返すべき
         $response->assertStatus(404);
     }
 }

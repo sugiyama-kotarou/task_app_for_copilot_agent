@@ -8,62 +8,62 @@ use Illuminate\Http\Request;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * タスク一覧を表示する
      */
     public function index()
     {
-        // TODO: Implement task listing with pagination (PR #2)
+        // TODO: ページネーション付きタスク一覧の実装 (PR #2)
         return view('tasks.index');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 新しいタスク作成フォームを表示する
      */
     public function create()
     {
-        // TODO: Implement task creation form (PR #3)
+        // TODO: タスク作成フォームの実装 (PR #3)
         return view('tasks.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新しく作成されたタスクをストレージに保存する
      */
     public function store(Request $request)
     {
-        // TODO: Implement task storage logic (PR #3)
+        // TODO: タスク保存ロジックの実装 (PR #3)
     }
 
     /**
-     * Display the specified resource.
+     * 指定されたタスクを表示する
      */
     public function show(Task $task)
     {
-        // TODO: Implement task detail view if needed
+        // TODO: 必要に応じてタスク詳細ビューの実装
         return view('tasks.show', compact('task'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 指定されたタスクの編集フォームを表示する
      */
     public function edit(Task $task)
     {
-        // TODO: Implement task edit form (PR #4)
+        // TODO: タスク編集フォームの実装 (PR #4)
         return view('tasks.edit', compact('task'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * 指定されたタスクをストレージで更新する
      */
     public function update(Request $request, Task $task)
     {
-        // TODO: Implement task update logic (PR #4)
+        // TODO: タスク更新ロジックの実装 (PR #4)
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 指定されたタスクをストレージから削除する
      */
     public function destroy(Task $task)
     {
-        // TODO: Implement task deletion logic (PR #5)
+        // TODO: タスク削除ロジックの実装 (PR #5)
     }
 }

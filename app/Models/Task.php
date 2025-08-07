@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     /**
-     * The attributes that are mass assignable.
+     * 一括代入可能な属性
      *
      * @var array<int, string>
      */
