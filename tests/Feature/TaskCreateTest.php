@@ -18,7 +18,7 @@ class TaskCreateTest extends TestCase
     public function test_task_create_form_displays(): void
     {
         $response = $this->get('/tasks/create');
-        
+
         $response->assertStatus(200);
         $response->assertSee('タスク作成');
         $response->assertSee('タスクのタイトル');
@@ -38,7 +38,7 @@ class TaskCreateTest extends TestCase
 
         $response->assertRedirect('/tasks');
         $response->assertSessionHas('success', 'タスクが正常に作成されました。');
-        
+
         $this->assertDatabaseHas('tasks', [
             'title' => 'テストタスク',
             'description' => null,
@@ -52,7 +52,7 @@ class TaskCreateTest extends TestCase
     public function test_task_can_be_created_with_all_fields(): void
     {
         Storage::fake('public');
-        
+
         $file = UploadedFile::fake()->image('test-thumbnail.jpg');
 
         $response = $this->post('/tasks', [
@@ -63,12 +63,12 @@ class TaskCreateTest extends TestCase
 
         $response->assertRedirect('/tasks');
         $response->assertSessionHas('success', 'タスクが正常に作成されました。');
-        
+
         $task = Task::where('title', 'フルテストタスク')->first();
         $this->assertNotNull($task);
         $this->assertEquals('このタスクの詳細説明です。', $task->description);
         $this->assertNotNull($task->thumbnail);
-        
+
         // ファイルが保存されたことを確認
         Storage::disk('public')->assertExists($task->thumbnail);
     }
@@ -95,7 +95,7 @@ class TaskCreateTest extends TestCase
     public function test_title_cannot_exceed_255_characters(): void
     {
         $longTitle = str_repeat('a', 256);
-        
+
         $response = $this->post('/tasks', [
             'title' => $longTitle,
         ]);
@@ -112,7 +112,7 @@ class TaskCreateTest extends TestCase
     public function test_thumbnail_must_be_image_file(): void
     {
         Storage::fake('public');
-        
+
         $file = UploadedFile::fake()->create('test.txt', 100);
 
         $response = $this->post('/tasks', [
@@ -132,7 +132,7 @@ class TaskCreateTest extends TestCase
     public function test_thumbnail_size_limit(): void
     {
         Storage::fake('public');
-        
+
         // 3MBのファイルを作成（制限は2MB）
         $file = UploadedFile::fake()->image('large-image.jpg')->size(3000);
 

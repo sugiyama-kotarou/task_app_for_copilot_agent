@@ -55,9 +55,9 @@ class TaskModelTest extends TestCase
      */
     public function test_fillable_fields_are_correct(): void
     {
-        $task = new Task();
+        $task = new Task;
         $expectedFillable = ['title', 'description', 'thumbnail'];
-        
+
         $this->assertEquals($expectedFillable, $task->getFillable());
     }
 }
