@@ -47,15 +47,11 @@
                             </a>
                             
                             <!-- 削除アイコン -->
-                            <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="inline" onsubmit="return confirm('このタスクを削除してもよろしいですか？')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </form>
+                            <button type="button" class="text-red-500 hover:text-red-700 transition-colors" onclick="openDeleteModal({{ $task->id }}, '{{ addslashes($task->title) }}')">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     
@@ -86,4 +82,84 @@
         </a>
     </div>
 @endif
+
+<!-- 削除確認モーダル -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">タスクの削除</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    本当にこのタスクを削除しますか？
+                </p>
+                <p class="text-sm font-medium text-gray-900 mt-2" id="taskTitle"></p>
+                <p class="text-xs text-gray-500 mt-1">
+                    この操作は元に戻すことができません。
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+                    削除する
+                </button>
+                <button id="cancelDelete" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-20 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    キャンセル
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 削除フォーム（非表示） -->
+<form id="deleteForm" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+
+<script>
+let currentTaskId = null;
+
+function openDeleteModal(taskId, taskTitle) {
+    currentTaskId = taskId;
+    document.getElementById('taskTitle').textContent = taskTitle;
+    document.getElementById('deleteModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // ボディのスクロールを無効化
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+    document.body.style.overflow = 'auto'; // ボディのスクロールを有効化
+    currentTaskId = null;
+}
+
+// 削除確認ボタンクリック
+document.getElementById('confirmDelete').addEventListener('click', function() {
+    if (currentTaskId) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/tasks/${currentTaskId}`;
+        form.submit();
+    }
+});
+
+// キャンセルボタンクリック
+document.getElementById('cancelDelete').addEventListener('click', closeDeleteModal);
+
+// モーダル背景クリックで閉じる
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// ESCキーで閉じる
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('deleteModal').classList.contains('hidden')) {
+        closeDeleteModal();
+    }
+});
+</script>
 @endsection
