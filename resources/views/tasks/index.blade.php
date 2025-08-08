@@ -33,7 +33,7 @@
                         <div class="flex-1 mr-3">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $task->title }}</h3>
                             @if($task->description)
-                                <p class="text-gray-600 text-sm line-clamp-3">{{ $task->description }}</p>
+                                <p class="text-gray-600 text-sm line-clamp-3" style="white-space: pre-wrap;">{!! nl2br(e($task->description)) !!}</p>
                             @endif
                         </div>
                         
@@ -85,7 +85,7 @@
 
 <!-- 削除確認モーダル -->
 <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                 <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,11 +102,11 @@
                     この操作は元に戻すことができません。
                 </p>
             </div>
-            <div class="items-center px-4 py-3">
-                <button id="confirmDelete" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
+            <div class="flex justify-center items-center gap-3 px-4 py-3">
+                <button id="confirmDelete" class="flex-shrink-0 px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md min-w-[100px] hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">
                     削除する
                 </button>
-                <button id="cancelDelete" class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-20 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                <button id="cancelDelete" class="flex-shrink-0 px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md min-w-[100px] hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
                     キャンセル
                 </button>
             </div>
