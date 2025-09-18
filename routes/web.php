@@ -9,3 +9,6 @@ Route::get('/', function () {
 
 // Task management routes
 Route::resource('tasks', TaskController::class);
+
+// Additional route for task completion
+Route::patch('tasks/{task}/complete', [TaskController::class, 'complete'])->name('tasks.complete');

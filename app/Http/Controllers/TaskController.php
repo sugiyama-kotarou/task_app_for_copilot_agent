@@ -137,4 +137,18 @@ class TaskController extends Controller
         // 成功メッセージとともにタスク一覧にリダイレクト
         return redirect()->route('tasks.index')->with('success', 'タスクが正常に削除されました。');
     }
+
+    /**
+     * 指定されたタスクを完了状態にする
+     */
+    public function complete(Task $task)
+    {
+        // タスクのステータスを完了に更新
+        $task->update([
+            'status' => Task::STATUS_COMPLETED
+        ]);
+
+        // 成功メッセージとともにタスク一覧にリダイレクト
+        return redirect()->route('tasks.index')->with('success', 'タスクが完了しました。');
+    }
 }
