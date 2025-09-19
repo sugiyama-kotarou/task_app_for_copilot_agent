@@ -31,13 +31,18 @@
                 <div class="p-4">
                     <div class="flex justify-between items-start">
                         <div class="flex-1 mr-3">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $task->title }}</h3>
+                            <div class="flex items-center mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{{ $task->title }}</h3>
+                                @if($task->isCompleted())
+                                    <span class="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">完了</span>
+                                @endif
+                            </div>
                             @if($task->description)
                                 <p class="text-gray-600 text-sm line-clamp-3" style="white-space: pre-wrap;">{!! nl2br(e($task->description)) !!}</p>
                             @endif
                         </div>
                         
-                        <!-- 編集・削除アイコン -->
+                        <!-- 編集・完了・削除アイコン -->
                         <div class="flex space-x-2 flex-shrink-0">
                             <!-- 編集アイコン -->
                             <a href="{{ route('tasks.edit', $task) }}" class="text-blue-500 hover:text-blue-700 transition-colors">
@@ -45,6 +50,19 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </a>
+                            
+                            <!-- 完了アイコン -->
+                            @if(!$task->isCompleted())
+                                <form method="POST" action="{{ route('tasks.complete', $task) }}" style="display: inline;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="text-green-500 hover:text-green-700 transition-colors" title="完了にする">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            @endif
                             
                             <!-- 削除アイコン -->
                             <button type="button" class="text-red-500 hover:text-red-700 transition-colors" onclick="openDeleteModal({{ $task->id }}, '{{ addslashes($task->title) }}')">

@@ -56,8 +56,83 @@ class TaskModelTest extends TestCase
     public function test_fillable_fields_are_correct(): void
     {
         $task = new Task;
-        $expectedFillable = ['title', 'description', 'thumbnail'];
+        $expectedFillable = ['title', 'description', 'thumbnail', 'status'];
 
         $this->assertEquals($expectedFillable, $task->getFillable());
+    }
+
+    /**
+     * ステータス定数が正しく定義されていることをテストする
+     */
+    public function test_status_constants_are_correct(): void
+    {
+        $this->assertEquals(0, Task::STATUS_DRAFT);
+        $this->assertEquals(1, Task::STATUS_IN_PROGRESS);
+        $this->assertEquals(2, Task::STATUS_COMPLETED);
+    }
+
+    /**
+     * isCompleted メソッドが正しく動作することをテストする
+     */
+    public function test_is_completed_method_works_correctly(): void
+    {
+        // 下書きタスク
+        $draftTask = Task::create([
+            'title' => '下書きタスク',
+            'status' => Task::STATUS_DRAFT,
+        ]);
+        $this->assertFalse($draftTask->isCompleted());
+
+        // 処理中タスク
+        $inProgressTask = Task::create([
+            'title' => '処理中タスク',
+            'status' => Task::STATUS_IN_PROGRESS,
+        ]);
+        $this->assertFalse($inProgressTask->isCompleted());
+
+        // 完了タスク
+        $completedTask = Task::create([
+            'title' => '完了タスク',
+            'status' => Task::STATUS_COMPLETED,
+        ]);
+        $this->assertTrue($completedTask->isCompleted());
+    }
+
+    /**
+     * getStatusName メソッドが正しく動作することをテストする
+     */
+    public function test_get_status_name_method_works_correctly(): void
+    {
+        $draftTask = Task::create([
+            'title' => '下書きタスク',
+            'status' => Task::STATUS_DRAFT,
+        ]);
+        $this->assertEquals('下書き', $draftTask->getStatusName());
+
+        $inProgressTask = Task::create([
+            'title' => '処理中タスク',
+            'status' => Task::STATUS_IN_PROGRESS,
+        ]);
+        $this->assertEquals('処理中', $inProgressTask->getStatusName());
+
+        $completedTask = Task::create([
+            'title' => '完了タスク',
+            'status' => Task::STATUS_COMPLETED,
+        ]);
+        $this->assertEquals('完了', $completedTask->getStatusName());
+    }
+
+    /**
+     * タスクがデフォルトで下書きステータスで作成されることをテストする
+     */
+    public function test_task_created_with_default_draft_status(): void
+    {
+        $task = Task::create([
+            'title' => 'デフォルトステータステスト',
+        ]);
+
+        $this->assertEquals(Task::STATUS_DRAFT, $task->status);
+        $this->assertEquals('下書き', $task->getStatusName());
+        $this->assertFalse($task->isCompleted());
     }
 }
