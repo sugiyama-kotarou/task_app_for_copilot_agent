@@ -6,3 +6,5 @@ ubuntu内で起動
 sail up -d
 ## Vite
 sail npm run dev
+## ファイルパス
+\\wsl$\Ubuntu\home\kotaro\task-app
